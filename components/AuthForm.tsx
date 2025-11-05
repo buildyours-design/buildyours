@@ -135,7 +135,7 @@ const PresentationPage=forwardRef((props,ref)=>{
         </div>
         <div className="flex flex-col items-center justify-center">
            <div className="sm:flex sxs:hidden items-center sm:gap-1 justify-between w-full sm:px-4">
-              <h1 ref={footerHead} className="sm:text-base lg:text-lg text-white tracking-widest font-medium lg:w-[600px] sm:w-[550px]">i love turning complex ideas into clean, user-friendly designs that people actually enjoy using.Don't miss out on our services...</h1>
+              <h1 ref={footerHead} className="sm:text-base lg:text-lg text-white tracking-widest font-medium lg:w-[600px] sm:w-[550px]">i love turning complex ideas into clean, user-friendly designs that people actually enjoy using.Don&apos;t miss out on our services...</h1>
               <p ref={animateFooter} className="font-cheedemo xl:tracking-widest lg:text-9xl lg:tracking-wider text-white uppercase sm:text-[7rem] text-nowrap">intuitive</p>
            </div>
           <p className="dock_right_title text-black border-t-[1px] border-black text-center">To get more information and updates regarding our services and client support</p>
