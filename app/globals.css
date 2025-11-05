@@ -107,7 +107,7 @@
   }
 
   .home_description{
-    @apply text-white  text-center font-grotesk  sxs:tracking-wide xs:tracking-wider lg:text-[6rem,3vw,7rem] uppercase xs:leading-[clamp(40px,10vw,60px)] sm:leading-[clamp(60px,10vw,100px)] lg:leading-[clamp(3rem,6.3vw,6rem)] xs:text-[clamp(4rem,10vw,6rem)] sm:text-[clamp(5rem,10vw,6rem)];
+    @apply text-white  text-center font-grotesk  sxs:tracking-wide xs:tracking-wider lg:text-[6rem,3vw,7rem] uppercase xs:leading-[clamp(40px,10vw,60px)] sm:leading-[clamp(60px,10vw,100px)] lg:leading-[clamp(3rem,6.3vw,6rem)] xs:text-[clamp(4rem,10vw,6rem)] xs:bg-red-500 sm:text-[clamp(5rem,10vw,6rem)];
   }
 
   .home-description_title{
