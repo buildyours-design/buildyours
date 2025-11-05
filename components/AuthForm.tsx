@@ -26,7 +26,6 @@ const PresentationPage=forwardRef((props,ref)=>{
   const footerDescription=useRef(null)
   const animateDescription=useRef(null)
   const container=useRef(null);
-  const childContainer=useRef(null);
   gsap.registerPlugin(ScrollTrigger)
   /* gsap.defaults({ease: 'none',duration:2}) */
   useEffect(()=>{
@@ -80,9 +79,9 @@ const PresentationPage=forwardRef((props,ref)=>{
      })
 
 
-    const timeline2=gsap.timeline();
+   /* const timeline2=gsap.timeline();
 
-    /* ScrollTrigger.create({
+     ScrollTrigger.create({
       animation:timeline2,
       start:'+=3300',
       end:'+=500',
