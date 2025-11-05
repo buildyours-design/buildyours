@@ -145,5 +145,6 @@ const PresentationPage=forwardRef((props,ref)=>{
   )
 })
 
+PresentationPage.displayName="PresentationPage";
 
 export default PresentationPage;
