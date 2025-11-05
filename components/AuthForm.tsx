@@ -1,10 +1,9 @@
-import React,{useRef,useEffect, useState, forwardRef} from "react"
+import React,{useRef,useEffect, forwardRef} from "react"
 import ScrollTrigger from "gsap/ScrollTrigger";
-import Lenis from "lenis";
 import gsap from "gsap";
 import SplitType from "split-type";
 import AnimatedCube from "./canvas/cube";
-import { contactMaterialTexture, presentationMaterial } from "../constants";
+import { presentationMaterial } from "../constants";
 
 function animateCube(meshInstance,canvasInstance){
   const maxRotation =Math.PI;
