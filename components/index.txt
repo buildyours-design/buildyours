@@ -1,0 +1,416 @@
+//section one code
+
+useEffect(()=>{
+    function RenderCanvas(){
+      const ctx=canvas.current.getContext('2d',{
+        willReadFrequently:true
+      })
+
+      console.log(canvas.current,"ctx")
+      canvas.width=window.innerWidth;
+      canvas.height=window.innerHeight;
+      
+      class Particle{
+        constructor(effect,x,y, color){
+          this.effect=effect;
+          this.x=Math.random();
+          this.color=color;
+          this.originX=x;
+          this.originY=y;
+          this.size=this.effect.gap;
+          this.dx=0;
+          this.dy=0;
+          this.vx=0;
+          this.force=0;
+          this.angle=0;
+          this.distance=0;
+          this.friction=Math.random()*0.9;
+          this.ease=Math.random()*0.1+0.005;
+        }
+
+        draw(){
+          this.effect.context.fillStyle=this.color;
+          this.effect.context.fillRect(this.x, this.y, this.size, this.size);
+        }
+
+        update(){
+          this.dx=this.effect.mouse.x=this.x;
+          this.dy=this.effect.mouse.y-this.y;
+          this.distance=this.dx*this.dx+this.dy*this.dy;
+          this.force=-this.effect.mouse.radius/this.distance;
+          if(this.distance<this.effect.mouse.radius){
+            this.angle=Math.atan2(this.dy, this.dx);
+            this.vx+=this.force*Math.cos(this.angle);
+            this.vy+=this.force*Math.sin(this.angle);
+          }
+          this.x+=(this.vx*=this.friction)+(this.originX-this.x);
+          this.y+=(this.vy*=this.friction)+(this.originY-this.y);
+        }
+      }
+
+      class Effect{
+        constructor(context,canvasWidth, canvasHeight){
+          this.context=context;
+          this.canvasWidth=canvasWidth;
+          this.canvasHeight=canvasHeight;
+          this.textX=this.canvasWidth/2;
+          this.textY=this.canvasHeieight/2;
+          this.fontSize=90;
+          this.lineHeight=this.fontSize*0.8;
+          this.maxTextWidth=this.canvasWidth*0.8;
+          this.verticalOffset=0;
+          this.particles=[];
+          this.gap=1;
+          this.mouse={
+            radius:20000,
+            x:0,
+            y:0
+          };
+          window.addEventListener('mousemove',(e)=>{
+            this.mouse.x=e.x;
+            this.mouse.y=e.y;
+          })
+        }
+
+        wrapText(text){
+          const gradient=this.context.createLinearGradient(
+            0,0,this.canvasWidth,
+            this.canvasHeight
+          )
+          gradient.addColorStop(0.3, "red");
+          gradient.addColorStop(0.5, "orange");
+          gradient.addColorStop(0.7, "yellow");
+          this.context.textAlign='center';
+          this.context.textBaseline='middle';
+          this.context.lineWidth=3;
+          this.context.strokeStyle='white';
+          this.context.letterSpacing='15px';
+          this.context.fillStyle=gradient;
+          this.context.font=this.fontSize+'px Gluten-Regular';
+
+          let linesArray=[];
+          let words=text.split(' ');
+          let lineCounter=0;
+          let line='';
+
+          for(let i=0;i<words.length;i++){
+            let testLine=line+words[i]+' ';
+            if(this.context.measureText(testLine).width>this.maxTextWidth){
+              line=words[i]+' ';
+              lineCounter++;
+            }else{
+              line=testLine;
+            }
+            linesArray[lineCounter]=line;
+          }
+          let textHeight=this.lineHeight*lineCounter;
+          this.textY=this.canvasHeight/2-textHeight/2+this.verticalOffset;
+          linesArray.forEach((el,index)=>{
+            this.context.fillText(
+              el,
+              this.textX,
+              this.textY+index*this.lineHeight
+            );
+            this.context.strokeText(
+              el,
+              this.textX,
+              this.textY+index*this.lineHeight
+            );
+          });
+          this.convertToParticles;
+        }
+
+        convertToParticles(){
+          this.particles=[];
+          const pixels=this.context.getImageData(
+            0.0,this.canvasWidth,
+            this.canvasHeight
+          ).data;
+          this.context.clearRect(0,0,this.canvasWidth, this.canvasHeight);
+          for(let y=0;y<this.canvasHeight;y+=this.gap){
+            for(let x=0; x<this.canvasWidth;x+=this.gap){
+              const index=(y*this.canvasWidth+x)*4;
+              const alpha=pixels[index+3];
+              if(alpha>0){
+                const red=pixels[index];
+                const green=pixels[index+1];
+                const blue=pixels[index+2];
+                const color = "rgb(" + red + "," + green + "," + blue + ")";
+                this.particles.push(new Particle(this, x, y, color));
+              }
+            }
+          }
+        }
+        render(){
+          this.particles.forEach((particle)=>{
+            particle.update();
+            particle.draw();
+          });
+        }
+
+        resize(width, height){
+            this.canvasWidth=width;
+            this.canvasHeight=height;
+            this.textX=this.canvasWidth/2;
+            this.textY=this.canvasHeight/2;
+            this.maxTextWidth=this.canvasWidth*0.8;
+          }
+      }
+
+      const effect=new Effect(ctx, canvas.width, canvas.height);
+      effect.wrapText('get it done');
+      effect.render();
+
+      function animate(){
+        ctx.clearRect(0,0,canvas.width, canvas.height);
+        effect.render();
+        requestAnimationFrame(animate);
+      }
+      animate();
+      
+    }
+
+    RenderCanvas();
+  },[])
+
+
+
+//section two code
+useEffect(()=>{
+    const textSplit=new SplitType(textRef.current,{
+      type:'chars'
+    })
+     nextSection?gsap.from(textSplit.chars,{
+      opacity: 0,
+      y:10,
+      stagger: 0.05,
+      scale: 0.8,
+      delay: 1.2,
+      duration:4,
+      ease:'elastic.out(2,0.5)'
+    }):null
+  },[nextSection])
+
+
+
+  //home page
+
+  import React, { useRef, useEffect, useState } from 'react'
+
+import {motion} from "framer-motion"
+import { fadeIn, slideIn } from '../lib/motion'
+import { linkItems, technologies } from '../constants'
+import SplitType from "split-type"
+import gsap from "gsap"
+import Ball from './canvas/Ball'
+import SphereCanvas from './canvas/sphere'
+
+
+const HomePage = ({clipPath}) => {
+  const ref=useRef(null);
+  const homeFooter=useRef(null);
+  const homePRef=useRef(null);
+  const originalHeaderRef=useRef(null);
+  const homeParent=useRef(null)
+  const buttonTransition=useRef(null);
+
+
+ 
+
+  /* const screenSizes={
+    small:'480',
+    medium:'620',
+    large:'780',
+    extraLarge:'1020'
+  } */
+  useEffect(()=>{
+    const mediaQuery=window.matchMedia(('max-width: 500px'));
+    const innerWidth=window.innerWidth;
+
+    const splitText=new SplitType(ref.current,{
+      type:'chars'
+    });
+
+    const headerText="incredible";
+    const homeFooterRefs=new SplitType(homeFooter.current,{
+        type:'chars',
+    })
+
+   gsap.from(homeFooterRefs.chars,{
+      opacity:0,
+      y:50,
+      stagger:0.25,
+      duration:3
+   })
+   
+    
+  
+  /*   const originalTextKeys=Object.keys(originalHeader.lines[0].innerText)
+    const originalArray=[];
+    const originalTextValues=[]
+        originalTextKeys.forEach((char,index) => {
+        originalArray.push(char)
+        originalTextValues.push(originalHeader.lines[0].innerText[index])
+    });
+    const originalText=originalTextValues.toString(originalTextValues); */
+
+    /* originalText.forEach(char => {
+      const text=originalHeader.lines[0].innerText[char];
+      const htmlTextContent=originalHeader.lines[0].innerHTML;
+      const originalText=originalHeaderRef.current.children[0].innerText;
+    }); */
+  
+
+    const homeRefP=new SplitType(homePRef.current,{
+      type:'chars'
+    });
+
+
+
+    /* let homeRefPInterval=0;
+  
+    homeRefP.chars.forEach(character => {
+      homeRefPInterval++;
+       setTimeout(()=>{
+        console.log(character.innerText,"character")
+      },homeRefPInterval*1000)
+    }); */
+
+
+    gsap.fromTo(homePRef.current,{
+      x:`${homeParent.current.getBoundingClientRect().width}px`,
+    },{
+      x:`-${homeParent.current.getBoundingClientRect().width}px`,
+      duration: 18,
+      delay:5,
+      ease: 'linear',
+      repeat: -1
+    })
+    
+
+    const splitButtonText=new SplitType(buttonTransition.current,{
+      type:'chars'
+    })
+
+   
+    gsap.from(splitButtonText.chars,{
+      opacity:0,
+      scale:0.8,
+      duration:10,
+      delay: 5,
+      rotation:0,
+      stagger:0.05,
+      ease:'easeInOut'
+    })
+    
+
+    gsap.from(splitText.chars,{
+      opacity: 0,
+      y:0,
+      stagger: 0.05,
+      delay: 8,
+      filter: 'blur(0.4)',
+      duration:10,
+      ease:'elastic.out(2,0.5)'
+    });
+
+   
+  },[])
+  
+  
+
+  return (
+        <main className='flex flex-col px-4 py-6 bg-gradient-secondary'>
+            <div className='flex'>
+              <section className="flex flex-col gap-4">        
+                  <div className="mx-4">
+                    <div className="flex flex-wrap justify-start items-start">
+                        {technologies[0].get.map((technology)=>(
+                            <div className="w-20 h-20" key={technology.name}>
+                                <Ball ref={ref} icon={technology.icon.src}/>
+                            </div>
+                        ))}
+                        
+                        <div className="flex mt-10">
+                          {technologies[0].started.map((technology)=>(
+                            <div className="w-20 h-20" key={technology.name}>
+                                <Ball icon={technology.icon.src}/>
+                            </div>
+                        ))}
+                        </div>
+                    </div>
+                    <div className="mt-10">
+                        <div className="flex flex-col gap-2">
+                          <div ref={homeParent} className="flex">
+                            <p /* ref={homePRef} */ className='font-semibold font-nulshock uppercase text-4xl text-nowrap w-fit tracking-widest text-transparent bg-clip-text bg-gradient-primary'>build e-commerce platforms</p>
+                          </div>
+                          <div className='flex items-center justify-end gap-4'>
+                            <h1 ref={ref} className=" sm:w-[400px] sm:mt-4 text-white font-light text-sm tracking-widest">Ever wondered where you will get a new website for your brand.Don't worry we got you covered...get it delivered right beneath your door step...</h1>
+                           
+                          </div>
+                        </div>
+                      </div>
+                  </div>   
+                      <section>
+                          <div style={clipPath('dock_left_bottom')} className='w-full bg-project-image bg-cover bg-no-repeat bg-center sm:h-[300px]'/>
+                         
+                      </section>
+              </section>
+              <div className={`flex flex-col`}>
+
+                    <div className={`sm:mb-2 flex flex-col gap-4`}>
+                      <h1 className='text-center  sm:text-5xl text-white uppercase font-spaceAge font-extralight tracking-widest'>welcome to our platform...</h1>
+                      <h1 className="dock_right_title font-spaceAge text-center">With years of expertise we drive immediate <br />and predictable results</h1>
+                      
+                  </div>
+                  <div className={`flex`}>    
+                      <div className='flex flex-col items-center'>
+                        <div className="mt-4 w-full">
+                            <p ref={originalHeaderRef} className="dock_right_description font-nulshock">
+                              <span  className="bg-clip-text  bg-gradient-primary text-transparent">get it done </span>
+                            
+                            <span className="text-white">in no time...</span></p>
+              
+                        </div>
+                   {/* <div className="sm:mt-2">
+                    <div className="flex relative border-l-2 border-b-2 rounded-[10px] sm:w-full font-extralight text-white gap-2 items-center">
+                       <motion.h1 variants={fadeIn('up','spring',3,0.75)} className="text-center tracking-widest leading-8 ml-4">No more wasted budgets. Get your web app in front of the right people at the right place--right time, and right price...</motion.h1>  
+                       <h2 className='tracking-wider uppercase '>--contact us on <span className='cursor-pointer'>+729975740</span></h2>
+                  </div>
+                </div> */}
+                  <div className='mt-4'>
+                    {/* <h1 className='font-spaceAge text-5xl text-white text-center font-light tracking-widest'>waste no time but before that</h1> */}
+                  </div>
+                      </div>
+                  </div>
+                
+                
+                {/* <div className={`mt-4`}>
+                    <div style={clipPath('dock_left_bottom')} className='bg-image-project grayscale bg-center bg-no-repeat h-[200px] bg-cover'>
+
+                    </div>
+                    
+                </div> */}
+              </div>
+          </div>
+         <div className='flex justify-center'>
+            <h1 ref={homeFooter} className='text-white tracking-widest font-light font-spaceAge sm:text-7xl uppercase'>creating the future...</h1>
+          </div>
+        </main>
+  )
+}
+
+export default HomePage
+
+
+
+
+
+
+//this is code related to main.frag shader
+if(gl_FragColor.r < 0.1){
+    discard;
+  }
+
+  gl_FragColor.a*=circle(uv, 0.2);
+  gl_FragColor.a*=uProgress;
