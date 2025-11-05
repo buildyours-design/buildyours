@@ -7,3 +7,7 @@ const imagekit = new ImageKit({
   publicKey: env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY,
   privateKey: env.IMAGEKIT_PRIVATE_KEY,
 });
+
+export async function GET(){
+  return NextResponse.json(imagekit.getAuthenticationParameters());
+}
